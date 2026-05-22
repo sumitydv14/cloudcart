@@ -11,10 +11,10 @@ export default function SignupPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const { signup } = useAuth();
 
-  const handleSubmit = async (values: { name: string; email: string; password: string; confirmPassword: string }) => {
+  const handleSubmit = async (values: { name: string; email: string; password: string; confirmPassword: string, role: string }) => {
     setFormError(null);
     try {
-      await signup(values.name, values.email, values.password);
+      await signup(values.name, values.email, values.password, values.role);
       router.push('/');
     } catch (error: any) {
       setFormError(error?.data?.message ?? 'Unable to create account.');

@@ -21,9 +21,9 @@ const useAuth = () => {
     }
   };
 
-  const signup = async (name: string, email: string, password: string) => {
+  const signup = async (name: string, email: string, password: string, role: string) => {
     try {
-      const result = await signupMutation({ name, email, password }).unwrap();
+      const result = await signupMutation({ name, email, password, role }).unwrap();
       dispatch(setCredentials({ user: result.user, accessToken: result.accessToken }));
     } catch (error: any) {
       dispatch(setAuthError(error?.data?.message ?? 'Unable to sign up.'));

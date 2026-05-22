@@ -3,9 +3,11 @@ import { AuthTokens, authenticateUser, issueTokens, registerUser, validateRefres
 import { config } from '../config';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
+   console.log('Received registration request with body:', req.body);
   try {
     const { name, email, password, role } = req.body;
     const user = await registerUser(name, email, password, role);
+    console.log('Registered user:', user);
     const tokens: AuthTokens = await issueTokens(user);
 
     res.cookie('refreshToken', tokens.refreshToken, {

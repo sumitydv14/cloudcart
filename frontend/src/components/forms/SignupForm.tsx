@@ -26,6 +26,7 @@ const SignupForm = ({ onSubmit, error }: SignupFormProps) => {
       email: '',
       password: '',
       confirmPassword: '',
+      role: 'customer',
     },
   });
 
@@ -39,6 +40,16 @@ const SignupForm = ({ onSubmit, error }: SignupFormProps) => {
       <Input label="Email" type="email" {...register('email')} error={errors.email?.message} />
       <Input label="Password" type="password" {...register('password')} error={errors.password?.message} />
       <Input label="Confirm password" type="password" {...register('confirmPassword')} error={errors.confirmPassword?.message} />
+      <select
+        {...register('role')}
+        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-slate-500 focus:outline-none">
+        <option value="">Select role</option>
+        <option value="customer">Customer</option>
+        <option value="seller">Seller</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      {errors.role?.message ? ( errors.role.message) : null}
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <Button type="submit" loading={isSubmitting} className="w-full">
         Create account
