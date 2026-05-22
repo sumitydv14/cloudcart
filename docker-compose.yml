@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: cloudcart-frontend:dev
+    image: sumitydv14/cloudcart-frontend:dev
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
       - api-gateway
 
   api-gateway:
-    image: cloudcart-gateway:dev
+    image: sumitydv14/cloudcart-gateway:dev
     build:
       context: ./services/shared
       dockerfile: Dockerfile.gateway
@@ -26,7 +26,7 @@ services:
       - payment-service
 
   auth-service:
-    image: cloudcart-auth-service:dev
+    image: sumitydv14/cloudcart-auth-service:dev
     build:
       context: ./services/auth-service
       dockerfile: Dockerfile
@@ -42,7 +42,7 @@ services:
       - redis
 
   product-service:
-    image: cloudcart-product-service:dev
+    image: sumitydv14/cloudcart-product-service:dev
     build:
       context: ./services/product-service
       dockerfile: Dockerfile
@@ -59,7 +59,7 @@ services:
       - redis
 
   cart-service:
-    image: cloudcart-cart-service:dev
+    image: sumitydv14/cloudcart-cart-service:dev
     build:
       context: ./services/cart-service
       dockerfile: Dockerfile
@@ -73,7 +73,7 @@ services:
       - redis
 
   order-service:
-    image: cloudcart-order-service:dev
+    image: sumitydv14/cloudcart-order-service:dev
     build:
       context: ./services/order-service
       dockerfile: Dockerfile
@@ -88,7 +88,7 @@ services:
       - postgres
 
   payment-service:
-    image: cloudcart-payment-service:dev
+    image: sumitydv14/cloudcart-payment-service:dev
     build:
       context: ./services/payment-service
       dockerfile: Dockerfile
