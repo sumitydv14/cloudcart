@@ -1,0 +1,133 @@
+services:
+  frontend:
+    image: cloudcart-frontend:dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - api-gateway
+
+  api-gateway:
+    image: cloudcart-gateway:dev
+    build:
+      context: ./services/shared
+      dockerfile: Dockerfile.gateway
+    ports:
+      - '8080:8080'
+    depends_on:
+      - auth-service
+      - product-service
+      - cart-service
+      - order-service
+      - payment-service
+
+  auth-service:
+    image: cloudcart-auth-service:dev
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - MONGO_URI=mongodb://mongo:27017/cloudcart-auth
+      - REDIS_HOST=redis
+    depends_on:
+      - mongo
+      - redis
+
+  product-service:
+    image: cloudcart-product-service:dev
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
+    ports:
+      - '4001:4001'
+    environment:
+      - NODE_ENV=development
+      - PORT=4001
+      - DATABASE_URL=postgres://cloudcart:cloudcartpass@postgres:5432/cloudcart_products
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis
+
+  cart-service:
+    image: cloudcart-cart-service:dev
+    build:
+      context: ./services/cart-service
+      dockerfile: Dockerfile
+    ports:
+      - '4002:4002'
+    environment:
+      - NODE_ENV=development
+      - PORT=4002
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  order-service:
+    image: cloudcart-order-service:dev
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    ports:
+      - '4003:4003'
+    environment:
+      - NODE_ENV=development
+      - PORT=4003
+      - DATABASE_URL=postgres://cloudcart:cloudcartpass@postgres:5432/cloudcart_orders
+      - POSTGRES_HOST=postgres
+    depends_on:
+      - postgres
+
+  payment-service:
+    image: cloudcart-payment-service:dev
+    build:
+      context: ./services/payment-service
+      dockerfile: Dockerfile
+    ports:
+      - '4004:4004'
+    environment:
+      - NODE_ENV=development
+      - PORT=4004
+      - DATABASE_URL=postgres://cloudcart:cloudcartpass@postgres:5432/cloudcart_payments
+      - PAYMENT_PROVIDER=sandbox
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: cloudcart
+      POSTGRES_PASSWORD: cloudcartpass
+      POSTGRES_DB: cloudcart
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudcart -d cloudcart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  mongo:
+    image: mongo:6
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7
+    ports:
+      - '6379:6379'
+
+volumes:
+  postgres-data:
+  mongo-data:
